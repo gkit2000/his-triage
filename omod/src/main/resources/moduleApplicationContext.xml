@@ -15,39 +15,6 @@
 	-->
 	<!-- The default place to look for controllers that have annotations -->
 	<context:component-scan base-package="org.openmrs.module.triage.web" />
-	<bean parent="serviceContext">
-		<property name="moduleService">
-			<list>
-				<value>org.openmrs.module.triage.TriageService</value>
-				<bean
-					class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
-					<property name="transactionManager">
-						<ref bean="transactionManager" />
-					</property>
-					<property name="target">
-						<bean class="org.openmrs.module.triage.impl.TriageServiceImpl">
-							<property name="dao">
-								<bean
-									class="org.openmrs.module.triage.db.hibernate.HibernateTriageDAO">
-									<property name="sessionFactory">
-										<ref bean="sessionFactory" />
-									</property>
-								</bean>
-							</property>
-						</bean>
-					</property>
-					<property name="preInterceptors">
-						<list>
-							<ref bean="authorizationInterceptor" />
-						</list>
-					</property>
-					<property name="transactionAttributeSource">
-						<bean
-							class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource" />
-					</property>
-				</bean>
-			</list>
-		</property>
-	</bean>
+
 
 </beans>

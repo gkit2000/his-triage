@@ -2,7 +2,7 @@
 <!DOCTYPE module PUBLIC "-//OpenMRS//DTD OpenMRS Config 1.2//EN" "http://resources.openmrs.org/doctype/config-1.2.dtd">
 
 <module configVersion="1.2">
-
+	
 	<!-- Base Module Properties -->
 	<id>@MODULE_ID@</id>
 	<name>@MODULE_NAME@</name>
@@ -10,35 +10,33 @@
 	<package>@MODULE_PACKAGE@</package>
 	<author>Ghanshyam</author>
 	<description>
-		Triage Module
+			Triage Module
 	</description>
 
-	<!-- Module Activator -->
-	<activator>@MODULE_PACKAGE@.TriageModuleActivator</activator>
-
+	<activator>@MODULE_PACKAGE@.TriageQueueActivator</activator>
 	<require_modules>
-		<require_module>org.openmrs.module.hospitalcore</require_module>
-	</require_modules>
-
+                  <require_module>org.openmrs.module.hospitalcore</require_module>
+    </require_modules>
+	
 	<require_version>${openMRSVersion}</require_version>
-
-	<!-- Extensions -->
+	
 	<extension>
 		<point>org.openmrs.admin.list</point>
 		<class>@MODULE_PACKAGE@.extension.html.AdminList</class>
 	</extension>
+
 	<extension>
 		<point>org.openmrs.gutter.tools</point>
-		<class>@MODULE_PACKAGE@.extension.html.TriageHeader</class>
+		<class>@MODULE_PACKAGE@.extension.html.TriageQueueHeader</class>
 	</extension>
-
+	
 	<privilege>
 		<name>Access Triage</name>
 		<description>Allows user to access Triage</description>
 	</privilege>
-
+	
 	<!-- Internationalization -->
-	<!-- All message codes should start with ${project.parent.artifactId}. -->
+	<!-- All message codes should start with @MODULE_ID@.* -->
 	<messages>
 		<lang>en</lang>
 		<file>messages.properties</file>
@@ -52,9 +50,8 @@
 		<file>messages_es.properties</file>
 	</messages>
 	<!-- /Internationalization -->
-
+	
 	<mappingFiles>
-
-	</mappingFiles>
-
+    </mappingFiles>
 </module>
+
