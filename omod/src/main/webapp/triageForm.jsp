@@ -102,6 +102,11 @@
 									<img id="calendarButtonn" src="../../moduleResources/triage/calendar.gif" />
 								</td>
 							</tr>
+							<tr>
+							<td><b>Opd Room to Visit: <label style="color:red">*</label></b> <select id="opdWard" name="opdWard">
+			                </select>
+			                </td>
+							</tr>
 							 <tr style="text-align:center">
 							 <td><input type="submit" value="Save"></td>
 							 </tr>

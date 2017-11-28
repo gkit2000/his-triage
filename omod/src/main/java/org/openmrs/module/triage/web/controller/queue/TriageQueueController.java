@@ -117,7 +117,7 @@ public class TriageQueueController {
 			queueService.saveTriagePatientQueue(queue);
 			return "redirect:/module/triage/triageForm.htm?patientId="
 					+ queue.getPatient().getPatientId()
-					+ "&opdId="
+					+ "&triageId="
 					+ queue.getTriageConcept().getConceptId()
 					+ "&visitStatus="
 					+ queue.getVisitStatus()
