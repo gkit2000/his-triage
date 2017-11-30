@@ -47,7 +47,7 @@ QUEUE={
 		},
 		refreshQueue : function()
 		{
-			jQuery("#Patient_queue").load("opdPatientQueueAjax.htm?opdId="+jQuery("#opdCombo").val(), function(){	QUEUE.initTableHover(); }); 
+			jQuery("#Patient_queue").load("triagePatientQueueAjax.htm?triageId="+jQuery("#triageCombo").val(), function(){	QUEUE.initTableHover(); }); 
 		},
 		searchQueue : function()
 		{

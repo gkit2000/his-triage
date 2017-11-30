@@ -57,7 +57,6 @@ public class TriageQueueController {
 					.getService(PatientQueueService.class);
 				List<TriagePatientQueue> patientQueues = patientQueueService
 						.listTriagePatientQueue(null, triageId, "", 0, 0);
-				System.out.println("xxxxxxxxxxxxxxxx------"+patientQueues.size());
 				model.put("patientQueues", patientQueues);
 		}
 
@@ -109,7 +108,7 @@ public class TriageQueueController {
 			@RequestParam(value = "usr", required = false) String usr) {
 		PatientQueueService queueService = Context
 				.getService(PatientQueueService.class);
-			TriagePatientQueue queue = queueService
+		TriagePatientQueue queue = queueService
 					.getTriagePatientQueueById(queueItemId);
 			queue.setStatus(Context.getAuthenticatedUser().getGivenName() + " "
 					+ TriagePatientQueueConstants.STATUS);
@@ -119,8 +118,8 @@ public class TriageQueueController {
 					+ queue.getPatient().getPatientId()
 					+ "&triageId="
 					+ queue.getTriageConcept().getConceptId()
-					+ "&visitStatus="
-					+ queue.getVisitStatus()
+					+ "&referralId="
+					+ queue.getReferralConcept().getConceptId()
 					+ "&queueId="
 					+ queue.getId();
 	}

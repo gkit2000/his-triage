@@ -37,6 +37,36 @@
 						<label><b class="boxHeader">Current Vitals Details</b></label>
 						<form>
 						<table width="65%" height="50%" class=box>
+						<tr>
+		<td width="40%"><b>Patient ID:</b> ${patient.patientIdentifier.identifier}</td>
+		<td width="30%">
+			<c:if test="${not empty admittedStatus }">
+				<span style="background-color:red; color:white">Admitted patient</span>				
+			</c:if>
+		</td>
+		<td width="30%"><b>Triage Name:</b> ${triage.name } </td>
+	</tr>
+	<tr>
+		<td width="40%"><b>Name:</b> ${patient.givenName}&nbsp;${patient.familyName}</td>
+		<td width="30%"><b>Age:</b> ${age }</td>
+		<td width="30%"><b>Gender:</b> ${patient.gender }</td>
+	</tr>
+
+		<td width="30%"><b>Age category:</b> ${ageCategory }</td>
+		<td width="30%"><b>Visit Status:</b>
+		<c:choose> 
+				<c:when test="${referredType.class.name == 'org.openmrs.ConceptName'}">
+					${referredType}
+				</c:when>
+				<c:otherwise>
+					${referral.name }	
+				</c:otherwise>
+			</c:choose>
+		</td>
+		
+	</tr>
+						</table>
+						<table width="65%" height="50%" class=box>
 							<tr>
 								<th></th>
 								<th></th>
@@ -102,9 +132,16 @@
 									<img id="calendarButtonn" src="../../moduleResources/triage/calendar.gif" />
 								</td>
 							</tr>
+							</table>
+							<table class=box>
 							<tr>
-							<td><b>Opd Room to Visit: <label style="color:red">*</label></b> <select id="opdWard" name="opdWard">
-			                </select>
+							<td><b>Opd Room to Visit: <label style="color:red">*</label></b>
+							<select id="opdWard" name="opdWard"><option value=""><------Select
+						OPD------></option>
+					<c:forEach items="${OPDs}" var="opd">
+						<option value="${opd.id}">${opd.name}</option>
+					</c:forEach>
+			</select>
 			                </td>
 							</tr>
 							 <tr style="text-align:center">

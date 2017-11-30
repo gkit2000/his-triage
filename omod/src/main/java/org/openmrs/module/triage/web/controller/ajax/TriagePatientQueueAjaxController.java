@@ -38,7 +38,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller("TriagePatientQueueAjaxController")
 public class TriagePatientQueueAjaxController {
-	@RequestMapping(value = "/module/triage/opdPatientQueueAjax.htm", method = RequestMethod.GET)
+	@RequestMapping(value = "/module/triage/triagePatientQueueAjax.htm", method = RequestMethod.GET)
 	public String viewOpdPatientQueue(@RequestParam("opdId") Integer opdId,
 			Map<String, Object> model, Model modl, HttpServletRequest request) {
 		if (opdId != null && opdId > 0) {
@@ -50,6 +50,6 @@ public class TriagePatientQueueAjaxController {
 						.listTriagePatientQueue(null, opdId, "", 0, 0);
 				model.put("patientQueues", patientQueues);
 		}
-		return "/module/triage/ajax/opdPatientQueueAjax";
+		return "/module/triage/ajax/triagePatientQueueAjax";
 	}
 }

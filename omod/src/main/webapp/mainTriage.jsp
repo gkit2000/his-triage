@@ -27,14 +27,14 @@
 <%@ include file="includes/js_css.jsp" %>
 
 <input type="hidden" id="pageId" value="patientQueue"/>
-<input type="hidden" id="opdCombo" value="${triageId}"/>
+<input type="hidden" id="triageCombo" value="${triageId}"/>
 <div class="box" >
 
 <br/>
 <input type="hidden" id="intervalId" value=""/>
 <div id="tabs">
      <ul>
-         <li><a href="triagePatientQueue.htm?triageId=${opdId}"  title="Patient queue"><span >Patient Queue</span></a></li>
+         <li><a href="triagePatientQueue.htm?triageId=${triageId}"  title="Patient queue"><span >Patient Queue</span></a></li>
          <li><a href="searchPatientInQueue.htm"   title="Search patient in queue"><span>Search Patient in Queue</span></a></li>
      </ul>
      

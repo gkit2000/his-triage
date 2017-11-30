@@ -28,7 +28,6 @@
 	<th align="center"><spring:message code="triage.queue.patientName"/></th>
 	<th align="center">Age</th>
 	<th align="center">Gender</th>
-	<!-- <th>Category</th> -->
 	<th align="center"><spring:message code="triage.queue.visitStatus"/></th>
 	<c:choose>
 	<c:when test="${user eq 'triageUser'}">
@@ -48,12 +47,7 @@
 		<td align="center">${fn:replace(fn:replace(queue.patientName,',',' '),'null','')}</td>
 		<td align="center">${queue.age }</td>
 		<td align="center">${queue.sex}</td>
-		<%-- <td>${queue.category}</td> --%>
-		<td align="center">${queue.visitStatus}
-		<c:if test="${not empty queue.referralConceptName}">
-		Referred From ${queue.referralConceptName}
-		</c:if>
-		</td>
+		<td align="center">${queue.referralConceptName}
 		<td align="center">${queue.status}</td>
 	</tr>
 </c:forEach>

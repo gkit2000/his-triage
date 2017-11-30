@@ -44,9 +44,9 @@
 			<td width="50%">
 				<select id="opdChooseCombo" onchange="QUEUE.changeOPD(this)">
 					<option value="0">-Please select-</option>
-					<c:forEach items="${listOPD}" var="opd">
-						<option value="${opd.answerConcept.id }"
-							<c:if test="${opdId == opd.answerConcept.id  }">selected="selected"</c:if>>${opd.answerConcept.name}</option>
+					<c:forEach items="${listTriage}" var="triage">
+						<option value="${triage.answerConcept.id }"
+							<c:if test="${triageId == triage.answerConcept.id  }">selected="selected"</c:if>>${triage.answerConcept.name}</option>
 					</c:forEach>
 				</select>
 	  		</td>

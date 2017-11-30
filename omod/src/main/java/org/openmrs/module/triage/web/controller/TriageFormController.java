@@ -21,7 +21,12 @@
 package org.openmrs.module.triage.web.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -33,9 +38,17 @@ import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.Patient;
 import org.openmrs.User;
+import org.openmrs.api.EncounterService;
+import org.openmrs.api.PatientService;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.hospitalcore.HospitalCoreService;
+import org.openmrs.module.hospitalcore.IpdService;
 import org.openmrs.module.hospitalcore.PatientQueueService;
+import org.openmrs.module.hospitalcore.model.IpdPatientAdmitted;
 import org.openmrs.module.hospitalcore.model.OpdPatientQueue;
+import org.openmrs.module.hospitalcore.model.TriagePatientQueue;
+import org.openmrs.module.hospitalcore.util.PatientUtils;
+import org.openmrs.module.triage.util.TriageUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,14 +63,87 @@ public class TriageFormController {
 	@RequestMapping(method = RequestMethod.GET)
 	public String firstView(
 			@RequestParam("patientId") Integer patientId,
+			@RequestParam("triageId") Integer triageId,
+			@RequestParam("queueId") Integer queueId,
+			@RequestParam("referralId") Integer referralId,
 			Model model) {
+		PatientService ps = Context.getPatientService();
+		Patient patient = ps.getPatient(patientId);
+		model.addAttribute("patient",patient);
+		model.addAttribute("triage", Context.getConceptService().getConcept(triageId));
+		Date birthday = patient.getBirthdate();
+		model.addAttribute("age", PatientUtils.estimateAge(birthday));
+		model.addAttribute("ageCategory", TriageUtil.calcAgeClass(patient.getAge()));
+        List<EncounterType> types = new ArrayList<EncounterType>();
+		EncounterType reginit = Context.getEncounterService().getEncounterType("REGINITIAL");
+		types.add(reginit);
+		EncounterType regrevisit = Context.getEncounterService().getEncounterType("REGREVISIT");
+		types.add(regrevisit);
+		EncounterType labencounter = Context.getEncounterService().getEncounterType("LABENCOUNTER");
+		types.add(labencounter);
+		EncounterType radiologyencounter = Context.getEncounterService().getEncounterType("RADIOLOGYENCOUNTER");
+		types.add(radiologyencounter);
+		EncounterType opdencounter = Context.getEncounterService().getEncounterType("OPDENCOUNTER");
+		types.add(opdencounter);
+		EncounterType ipdencounter = Context.getEncounterService().getEncounterType("IPDENCOUNTER");
+		types.add(ipdencounter);
+		EncounterType triageinit = Context.getEncounterService().getEncounterType("TRIAGEINITIAL");
+		types.add(triageinit);
+		EncounterType triagerevisit = Context.getEncounterService().getEncounterType("TRIAGEREVISIT");
+		types.add(triagerevisit);
+		
+		PatientQueueService pqs = Context.getService(PatientQueueService.class);
+		IpdService ipdService=Context.getService(IpdService.class);
+		TriagePatientQueue triagePatientQueue = pqs.getTriagePatientQueueById(queueId);
+		Date createdOn = null;
+		if(queueId!=null){
+			createdOn = triagePatientQueue.getCreatedOn();
+		}
+		else{
+			createdOn = new Date();
+		}
+		// get Encounter by date
+		Encounter encounter = null;
+		EncounterService es = Context.getEncounterService();
+		List<Encounter> listEncounter = es.getEncounters(patient, createdOn, createdOn);
+		if (1 == listEncounter.size())
+			encounter = listEncounter.get(0);
+		else {
+			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
+			encounter = hcs.getLastVisitEncounter(patient, types);
+		}
+		Concept referralConcept = Context.getConceptService().getConcept("PATIENT REFERRED TO HOSPITAL?");
+		Concept referredTypeConcept = Context.getConceptService().getConcept("REASON FOR REFERRAL");
+		Obs referral = null;
+		if(encounter!=null){
+		Set<Obs> setObs = Context.getObsService().getObservations(encounter);
+		Iterator<Obs> obs = setObs.iterator();
+		Obs o = new Obs();
+		while (obs.hasNext()) {
+			o = obs.next();
+			if (referredTypeConcept.getId().equals(o.getConcept().getId())){
+				referral = o;
+			}
+		  }
+		}
+		if (null != referral){
+			model.addAttribute("referredType", referral.getValueCoded().getName());
+	     }
+		model.addAttribute("referral", Context.getConceptService().getConcept(referralId));
+        IpdPatientAdmitted admitted = ipdService.getAdmittedByPatientId(patientId);
+		if (admitted != null) {
+			model.addAttribute("admittedStatus", "Admitted");
+		}
 		model.addAttribute("OPDs", getSubConcepts("OPD WARD"));
 		return "module/triage/triageForm";
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String formSummit(HttpServletRequest request, Model model,@RequestParam("patient") Patient patient) throws Exception {
+	public String formSummit(@RequestParam("queueId") TriagePatientQueue queueId,
+			@RequestParam("triageId") Integer triageId,
+			HttpServletRequest request, Model model,@RequestParam("patient") Patient patient) throws Exception {
 
+		PatientQueueService pqs = Context.getService(PatientQueueService.class);
 		Encounter encounter = createEncounter(patient, true);
 		Date date = new Date();
 		User user = Context.getAuthenticatedUser();
@@ -186,18 +272,18 @@ encounter.addObs(opdObs);
 
 encounter = Context.getEncounterService().saveEncounter(encounter);
 
-sendPatientToOPDQueue(patient, selectedOPDConcept, false,encounter);
-Integer triageId=Integer.parseInt(request.getParameter("triageId"));
+        sendPatientToOPDQueue(patient, selectedOPDConcept, false,encounter);
+        pqs.deleteTriagePatientQueue(queueId);
 		return "module/triage/triagePatientQueue.htm?triageId="+triageId;
 	}
 	
-	public static String getSubConcepts(String conceptName) {
+	public static List<Concept> getSubConcepts(String conceptName) {
 		Concept opdward = Context.getConceptService().getConcept(conceptName);
-		StringBuilder sb = new StringBuilder();
+		List<Concept> listConcept=new LinkedList<Concept>();
 		for (ConceptAnswer ca : opdward.getAnswers()) {
-			sb.append(ca.getAnswerConcept().getConceptId() + "," + ca.getAnswerConcept().getName().getName() + "|");
+			listConcept.add(ca.getAnswerConcept());	
 		}
-		return sb.toString();
+		return listConcept;
 	}
 	
 	public static Encounter createEncounter(Patient patient, boolean revisit) {

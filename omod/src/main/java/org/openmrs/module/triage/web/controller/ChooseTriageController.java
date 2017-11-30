@@ -42,13 +42,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ChooseTriageController {
 	
 	@RequestMapping(method=RequestMethod.GET)
-	public String firstView(@RequestParam(value="opdId",required=false) Integer opdId, Model model, HttpSession session){
+	public String firstView(@RequestParam(value="triageId",required=false) Integer triageId, Model model, HttpSession session){
 		Concept triageConcept = Context.getConceptService().getConceptByName("TRIAGE");		
 		List<ConceptAnswer> list = (triageConcept!= null ?  new ArrayList<ConceptAnswer>(triageConcept.getAnswers()) : null);
 				if(CollectionUtils.isNotEmpty(list)){
 					Collections.sort(list, new ConceptAnswerComparator());
 				}
-				model.addAttribute("listOPD",list);
+				model.addAttribute("listTriage",list);
 		return "module/triage/chooseTriage";	
 	}
 }

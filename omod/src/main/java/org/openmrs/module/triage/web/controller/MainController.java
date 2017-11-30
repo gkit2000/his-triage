@@ -48,12 +48,12 @@ public class MainController {
 				if(CollectionUtils.isNotEmpty(list)){
 					Collections.sort(list, new ConceptAnswerComparator());
 				}
-				model.addAttribute("listOPD",list);
+				model.addAttribute("listTriage",list);
 				
 				if( triageId == null ){
-					triageId =  (Integer) session.getAttribute("opdRoomId");
+					triageId =  (Integer) session.getAttribute("triageId");
 				}else{
-					session.setAttribute("opdRoomId", triageId);
+					session.setAttribute("triageId", triageId);
 				}
 				model.addAttribute("triageId", triageId);
 			return "module/triage/mainTriage";	
