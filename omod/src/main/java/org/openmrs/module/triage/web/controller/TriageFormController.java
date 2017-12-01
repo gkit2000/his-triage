@@ -47,6 +47,7 @@ import org.openmrs.module.hospitalcore.PatientQueueService;
 import org.openmrs.module.hospitalcore.model.IpdPatientAdmitted;
 import org.openmrs.module.hospitalcore.model.OpdPatientQueue;
 import org.openmrs.module.hospitalcore.model.TriagePatientQueue;
+import org.openmrs.module.hospitalcore.model.TriagePatientQueueLog;
 import org.openmrs.module.hospitalcore.util.PatientUtils;
 import org.openmrs.module.triage.util.TriageUtil;
 import org.springframework.stereotype.Controller;
@@ -87,10 +88,8 @@ public class TriageFormController {
 		types.add(opdencounter);
 		EncounterType ipdencounter = Context.getEncounterService().getEncounterType("IPDENCOUNTER");
 		types.add(ipdencounter);
-		EncounterType triageinit = Context.getEncounterService().getEncounterType("TRIAGEINITIAL");
-		types.add(triageinit);
-		EncounterType triagerevisit = Context.getEncounterService().getEncounterType("TRIAGEREVISIT");
-		types.add(triagerevisit);
+		EncounterType triageencounter = Context.getEncounterService().getEncounterType("TRIAGEENCOUNTER");
+		types.add(triageencounter);
 		
 		PatientQueueService pqs = Context.getService(PatientQueueService.class);
 		IpdService ipdService=Context.getService(IpdService.class);
@@ -139,11 +138,12 @@ public class TriageFormController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
-	public String formSummit(@RequestParam("queueId") TriagePatientQueue queueId,
+	public String formSummit(@RequestParam("queueId") Integer queueId,
 			@RequestParam("triageId") Integer triageId,
-			HttpServletRequest request, Model model,@RequestParam("patient") Patient patient) throws Exception {
+			HttpServletRequest request, Model model,@RequestParam("patientId") Patient patient) throws Exception {
 
 		PatientQueueService pqs = Context.getService(PatientQueueService.class);
+		TriagePatientQueue triagePatientQueue=pqs.getTriagePatientQueueById(queueId);
 		Encounter encounter = createEncounter(patient, true);
 		Date date = new Date();
 		User user = Context.getAuthenticatedUser();
@@ -273,8 +273,24 @@ encounter.addObs(opdObs);
 encounter = Context.getEncounterService().saveEncounter(encounter);
 
         sendPatientToOPDQueue(patient, selectedOPDConcept, false,encounter);
-        pqs.deleteTriagePatientQueue(queueId);
-		return "module/triage/triagePatientQueue.htm?triageId="+triageId;
+        TriagePatientQueueLog queueLog = new TriagePatientQueueLog();		
+		queueLog.setTriageConcept(triagePatientQueue.getTriageConcept());
+		queueLog.setTriageConceptName(triagePatientQueue.getTriageConceptName());
+		queueLog.setPatient(triagePatientQueue.getPatient());
+        queueLog.setCreatedOn(triagePatientQueue.getCreatedOn());
+        queueLog.setPatientIdentifier(triagePatientQueue.getPatientIdentifier());
+        queueLog.setPatientName(triagePatientQueue.getPatientName());
+        queueLog.setReferralConcept(triagePatientQueue.getReferralConcept());
+        queueLog.setReferralConceptName(triagePatientQueue.getReferralConceptName());
+        queueLog.setSex(triagePatientQueue.getSex());
+        queueLog.setUser(user);
+        queueLog.setStatus("processed");
+        queueLog.setBirthDate(triagePatientQueue.getBirthDate());
+        queueLog.setEncounter(encounter);
+        queueLog.setCategory(triagePatientQueue.getCategory());
+		TriagePatientQueueLog triagePatientLog = pqs.saveTriagePatientQueueLog(queueLog);
+        pqs.deleteTriagePatientQueue(triagePatientQueue);
+		return "redirect:module/triage/triagePatientQueue.htm?triageId="+triageId;
 	}
 	
 	public static List<Concept> getSubConcepts(String conceptName) {
@@ -287,13 +303,7 @@ encounter = Context.getEncounterService().saveEncounter(encounter);
 	}
 	
 	public static Encounter createEncounter(Patient patient, boolean revisit) {
-		EncounterType encounterType = null;
-		if (!revisit) {
-			encounterType = Context.getEncounterService().getEncounterType("TRIAGEINITIAL");
-		} else {
-			encounterType = Context.getEncounterService().getEncounterType("TRIAGEREVISIT");
-		}
-		
+		EncounterType encounterType = Context.getEncounterService().getEncounterType("TRIAGEENCOUNTER");
 		// get location
 		Location location = new Location(1);
 		

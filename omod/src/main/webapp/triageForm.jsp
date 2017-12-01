@@ -33,9 +33,18 @@
 					maxDate:'0'
 				});
 				});
+				
+function calculateBmi(){
+var weight = jQuery("#weight").val();
+var height = jQuery("#height").val();	
+var Bmi =  jQuery("#weight").val()/((jQuery("#height").val()/100)*(jQuery("#height").val()/100));
+
+var b=Math.round(Bmi);
+jQuery("#BMI").val(b);
+}
 </script>
 						<label><b class="boxHeader">Current Vitals Details</b></label>
-						<form>
+						<form id="triageForm" method="POST">
 						<table width="65%" height="50%" class=box>
 						<tr>
 		<td width="40%"><b>Patient ID:</b> ${patient.patientIdentifier.identifier}</td>
