@@ -65,17 +65,16 @@ public class TriageQueueController {
 
 	@RequestMapping(value = "/module/triage/searchPatientInQueue.htm")
 	public String searchOpdPatientQueue(
-			@RequestParam(value = "opdId", required = false) Integer opdId,
+			@RequestParam(value = "triageId", required = false) Integer triageId,
 			@RequestParam(value = "text", required = false) String text,
 			Map<String, Object> model, Model modl, HttpServletRequest request) {
-
-		if (StringUtils.isNotBlank(text) && opdId != null && opdId > 0) {
+		if (StringUtils.isNotBlank(text) && triageId != null && triageId > 0) {
 			ConceptService conceptService = Context.getConceptService();
-			Concept con = conceptService.getConcept(opdId);
+			Concept con = conceptService.getConcept(triageId);
 			PatientQueueService patientQueueService = Context
 					.getService(PatientQueueService.class);
 				List<TriagePatientQueue> patientQueues = patientQueueService
-						.listTriagePatientQueue(text.trim(), opdId, "", 0, 0);
+						.listTriagePatientQueue(text.trim(), triageId, "", 0, 0);
 				model.put("patientQueues", patientQueues);
 		}
 		model.put("queueText", text);

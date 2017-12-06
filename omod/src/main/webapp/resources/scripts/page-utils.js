@@ -51,8 +51,8 @@ QUEUE={
 		},
 		searchQueue : function()
 		{
-			if(jQuery("#queueText").val() != '' && jQuery("#queueText").val() != null && jQuery("#opdCombo").val() !='' && jQuery("#opdCombo").val()!= null ){
-				jQuery("#Search_patient_in_queue").load('searchPatientInQueue.htm', {text: jQuery("#queueText").val(), opdId: jQuery("#opdCombo").val() },
+			if(jQuery("#queueText").val() != '' && jQuery("#queueText").val() != null && jQuery("#triageCombo").val() !='' && jQuery("#triageCombo").val()!= null ){
+				jQuery("#Search_patient_in_queue").load('searchPatientInQueue.htm', {text: jQuery("#queueText").val(), triageId: jQuery("#triageCombo").val() },
 					function(){	QUEUE.initTableHover();});
 			}else{
 				alert('Please enter text for search or choose opd first!');
