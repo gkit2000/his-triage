@@ -32,7 +32,14 @@
 					changeYear : true,
 					maxDate:'0'
 				});
-				});
+	if ("${patient.gender}" == "M" || "${patient.gender}" == "O") {
+    jQuery("#lastMenstrualPeriod").attr("disabled", "disabled");
+    jQuery("#calendarButtonn").hide();
+    }
+    jQuery("#calendarButtonn").click(function() {
+	jQuery("#lastMenstrualPeriod").datepicker("show");
+	 });
+   });
 				
 function calculateBmi(){
 var weight = jQuery("#weight").val();
@@ -43,8 +50,70 @@ var b=Math.round(Bmi);
 jQuery("#BMI").val(b);
 }
 </script>
+<script type="text/javascript">
+function validate(){
+var intRegex=/^(?:[1-9]\d*(?:\.\d\d?)?|0\.[1-9]\d?|0\.0[1-9])$/;
+
+if(!StringUtils.isBlank(jQuery("#weight").val())) {
+      if (!jQuery("#weight").val().match(intRegex)) {
+	  alert("Please enter weight in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#height").val())) {
+      if (!jQuery("#height").val().match(intRegex)) {
+	  alert("Please enter height in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#temp").val())) {
+      if (!jQuery("#temp").val().match(intRegex)) {
+	  alert("Please enter temperature in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#systolic").val())) {
+      if (!jQuery("#systolic").val().match(intRegex)) {
+	  alert("Please enter Systolic B.P in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#diastolic").val())) {
+      if (!jQuery("#diastolic").val().match(intRegex)) {
+	  alert("Please enter Diastolic B.P in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#pulsRate").val())) {
+      if (!jQuery("#pulsRate").val().match(intRegex)) {
+	  alert("Please enter Pulse Rate in correct format");
+	  return false;
+	  }
+}
+
+ re = /^\d{1,2}\/\d{1,2}\/\d{4}$/; 
+ if(jQuery("#lastMenstrualPeriod").val() != '' && !jQuery("#lastMenstrualPeriod").val().match(re)) 
+ {
+ alert("Invalid date format");
+ jQuery("#lastMenstrualPeriod").val('');
+ return false; 
+ } 					
+jQuery("#lastMenstrualPeriod").removeAttr("disabled");
+
+if (StringUtils.isBlank(jQuery("#opdWard").val())) {
+	alert("Please select OPD Room to visit");
+	return false;
+}
+			
+}
+</script>
 						<label><b class="boxHeader">Current Vitals Details</b></label>
-						<form id="triageForm" method="POST">
+						<form id="triageForm" method="POST" onsubmit="javascript:return validate();">
 						<table width="65%" height="50%" class=box>
 						<tr>
 		<td width="40%"><b>Patient ID:</b> ${patient.patientIdentifier.identifier}</td>
@@ -138,7 +207,7 @@ jQuery("#BMI").val(b);
 							<tr>
 								<td>LMP</td>
 								<td><input type="text" id="lastMenstrualPeriod" name="lastMenstrualPeriod" size="11" readonly="readonly">
-									<img id="calendarButtonn" src="../../moduleResources/triage/calendar.gif" />
+									<img id="calendarButtonn" name="calendarButtonn" src="../../moduleResources/triage/calendar.gif" />
 								</td>
 							</tr>
 							</table>
