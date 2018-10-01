@@ -137,14 +137,7 @@ if (StringUtils.isBlank(jQuery("#opdWard").val())) {
 
 		<td width="30%"><b>Age category:</b> ${ageCategory }</td>
 		<td width="30%"><b>Visit Status:</b>
-		<c:choose> 
-				<c:when test="${referredType.class.name == 'org.openmrs.ConceptName'}">
-					${referredType}
-				</c:when>
-				<c:otherwise>
-					${referral.name }	
-				</c:otherwise>
-			</c:choose>
+		${visitStatus}	
 		</td>
 		
 	</tr>

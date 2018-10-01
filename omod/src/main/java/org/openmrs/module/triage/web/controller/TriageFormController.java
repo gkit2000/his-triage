@@ -69,6 +69,7 @@ public class TriageFormController {
 			@RequestParam("queueId") Integer queueId,
 			@RequestParam("referralId") Integer referralId,
 			Model model) {
+		HospitalCoreService hcs=Context.getService(HospitalCoreService.class);
 		PatientService ps = Context.getPatientService();
 		Patient patient = ps.getPatient(patientId);
 		model.addAttribute("patient",patient);
@@ -109,7 +110,6 @@ public class TriageFormController {
 		if (1 == listEncounter.size())
 			encounter = listEncounter.get(0);
 		else {
-			HospitalCoreService hcs = Context.getService(HospitalCoreService.class);
 			encounter = hcs.getLastVisitEncounter(patient, types);
 		}
 		Concept referralConcept = Context.getConceptService().getConcept("PATIENT REFERRED TO HOSPITAL?");
@@ -135,6 +135,15 @@ public class TriageFormController {
 			model.addAttribute("admittedStatus", "Admitted");
 		}
 		model.addAttribute("OPDs", getSubConcepts("OPD WARD"));
+		
+		List<Obs> opdward=hcs.getObsByPersonAndConcept(Context.getPersonService().getPerson(patientId), Context.getConceptService().getConcept("TRIAGE"));
+		if(opdward.size()==1){
+			model.addAttribute("visitStatus","New Patient");	
+		}
+		else if(opdward.size()>1){
+			model.addAttribute("visitStatus","revisit");	
+		}
+		
 		return "module/triage/triageForm";
 	}
 
