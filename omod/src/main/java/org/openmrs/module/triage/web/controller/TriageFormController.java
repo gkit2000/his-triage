@@ -331,6 +331,24 @@ if(request.getParameter("lastMenstrualPeriod")!=null && request.getParameter("la
    triagePatientData.setLastMenstrualDate(lmpdate);
 }
 
+if (request.getParameter("fastingBloodSugar") != null && request.getParameter("fastingBloodSugar") != "") {
+	String FBS = request.getParameter("fastingBloodSugar");
+	Double fbsDouble = Double.parseDouble(FBS);
+	triagePatientData.setFbs(fbsDouble);
+}
+
+if (request.getParameter("randomBloodSugar") != null && request.getParameter("randomBloodSugar") != "") {
+	String RBS = request.getParameter("randomBloodSugar");
+	Double rbsDouble = Double.parseDouble(RBS);
+	triagePatientData.setRbs(rbsDouble);
+}
+
+if (request.getParameter("postPrandialBloodSugar") != null && request.getParameter("postPrandialBloodSugar") != "") {
+	String PPBS = request.getParameter("postPrandialBloodSugar");
+	Double ppbsDouble = Double.parseDouble(PPBS);
+	triagePatientData.setPpbs(ppbsDouble);
+}
+
 triagePatientData.setCreatedOn(date);
 
 Concept opdWardConcept = Context.getConceptService().getConcept("OPD WARD");

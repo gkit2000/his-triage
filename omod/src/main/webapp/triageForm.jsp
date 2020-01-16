@@ -96,6 +96,29 @@ if(!StringUtils.isBlank(jQuery("#pulsRate").val())) {
 	  }
 }
 
+if(!StringUtils.isBlank(jQuery("#fastingBloodSugar").val())) {
+      if (!jQuery("#fastingBloodSugar").val().match(intRegex)) {
+	  alert("Please enter Fasting Blood Sugar in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#randomBloodSugar").val())) {
+      if (!jQuery("#randomBloodSugar").val().match(intRegex)) {
+	  alert("Please enter Random Blood Sugar in correct format");
+	  return false;
+	  }
+}
+
+if(!StringUtils.isBlank(jQuery("#postPrandialBloodSugar").val())) {
+      if (!jQuery("#postPrandialBloodSugar").val().match(intRegex)) {
+	  alert("Please enter Post Prandial Blood Sugar in correct format");
+	  return false;
+	  }
+}
+
+
+
  re = /^\d{1,2}\/\d{1,2}\/\d{4}$/; 
  if(jQuery("#lastMenstrualPeriod").val() != '' && !jQuery("#lastMenstrualPeriod").val().match(re)) 
  {
@@ -207,6 +230,30 @@ if (StringUtils.isBlank(jQuery("#opdWard").val())) {
 								<td><input type="text" id="lastMenstrualPeriod" name="lastMenstrualPeriod" size="11" readonly="readonly">
 									<img id="calendarButtonn" name="calendarButtonn" src="../../moduleResources/triage/calendar.gif" />
 								</td>
+							</tr>
+							<tr>
+								<td>FBS</td>
+								<td>
+									<input type="text" name="fastingBloodSugar" id="fastingBloodSugar" size="11">
+								</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>RBS</td>
+								<td>
+									<input type="text" name="randomBloodSugar" id="randomBloodSugar" size="11">
+								</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							<tr>
+								<td>PPBS</td>
+								<td>
+									<input type="text" name="postPrandialBloodSugar" id="postPrandialBloodSugar" size="11">
+								</td>
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
 							</tr>
 							</table>
 							<table class=box>
